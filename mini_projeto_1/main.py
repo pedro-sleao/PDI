@@ -1,7 +1,6 @@
 import math
 import numpy as np
 import cv2
-from utils import get_labels
 
 def draw_color_preview(img, color):
     cv2.rectangle(img, (10, 10), (30, 30), color, -1) 
@@ -12,6 +11,18 @@ def draw_reference_points(img, points):
         cv2.circle(img, tuple(map(int, pt)), 5, (0,255,0), -1)
         cv2.putText(img, str(i+1), (int(pt[0])+5, int(pt[1])-5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
+        
+def get_labels(img):
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
+    indices_hue = np.uint8(179*labels/np.max(labels))
+    canal_vazio = 255*np.ones_like(indices_hue)
+    img_indices = cv2.merge([indices_hue, canal_vazio, canal_vazio])
+
+    img_final = cv2.cvtColor(img_indices, cv2.COLOR_HSV2RGB)
+    # set bg label to black
+    img_final[indices_hue==0] = 0
+
+    return labels
 
 # Callback functions
 def mouse_calibrating_cb(event,x,y,flags,param):
@@ -98,7 +109,7 @@ while True:
     if calibrating or len(referencePoints) == 4:
         draw_reference_points(image, referencePoints)
     if calibrating:
-        cv2.putText(image, "Click 4 points", (40,30),
+        cv2.putText(image, "Click 4 points | 1 - SE, 2 - SD, 3 - ID, 4 - IE", (40,30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
 
     cv2.imshow("warpedImage", image)
