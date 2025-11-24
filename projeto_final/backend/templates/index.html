@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>ESP32-CAM Monitor</title>
+
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        /* === SIDEBAR ESQUERDA === */
+        .sidebar {
+            width: 180px;          
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;   /* Centraliza verticalmente */
+            align-items: center;       /* Centraliza horizontalmente */
+            padding: 20px;
+            gap: 15px;
+        }
+
+        .sidebar button {
+            width: 150px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #444;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .sidebar button:hover {
+            background-color: #666;
+        }
+
+        /* === ÁREA DA IMAGEM === */
+        .content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111;
+        }
+
+        #camera {
+            max-width: 90%;
+            max-height: 90%;
+            background-color: black;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="sidebar">
+        <button onclick="atualizarImagem()">Atualizar imagem</button>
+        <!-- ADICIONE OUTROS BOTÕES AQUI -->
+    </div>
+
+    <div class="content">
+        <img id="camera" src="" alt="ESP32-CAM">
+    </div>
+
+    <script>
+        function atualizarImagem() {
+            const img = document.getElementById("camera");
+            img.src = "/snapshot?time=" + new Date().getTime(); // força o reload
+        }
+    </script>
+
+</body>
+</html>
