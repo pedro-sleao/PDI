@@ -59,8 +59,14 @@
 <body>
 
     <div class="sidebar">
-        <button onclick="atualizarImagem()">Atualizar imagem</button>
-        <!-- ADICIONE OUTROS BOTÕES AQUI -->
+        <button onclick="atualizarEstacionamento()">Estacionamento</button>
+        <button onclick="lerPlaca()">Entrada</button>
+        <p id="contador" style="color: white; margin-top: 20px; font-size: 16px;">
+            Veículos detectados: 0
+        </p>
+        <p id="plate" style="color: white; font-size: 16px; margin-top: 10px;">
+            Placa detectada: ---
+        </p>
     </div>
 
     <div class="content">
@@ -68,11 +74,37 @@
     </div>
 
     <script>
-        function atualizarImagem() {
+        async function atualizarEstacionamento() {
             const img = document.getElementById("camera");
-            img.src = "/snapshot?time=" + new Date().getTime(); // força o reload
+
+            // Faz requisição manualmente para ler os headers
+            const response = await fetch("/count-vehicles?time=" + new Date().getTime());
+
+            // Lê o número de veículos
+            const count = response.headers.get("X-Vehicle-Count") || 0;
+
+            // Atualiza contador na sidebar
+            document.getElementById("contador").innerText =
+                "Veículos detectados: " + count;
+
+            // Atualiza imagem
+            const blob = await response.blob();
+            img.src = URL.createObjectURL(blob);
         }
-    </script>
+
+        async function lerPlaca() {
+            const img = document.getElementById("camera");
+
+            const response = await fetch("/read-plate?time=" + new Date().getTime());
+
+            const plate = response.headers.get("X-Plate-Text") || "---";
+
+            document.getElementById("plate").innerText = "Placa detectada: " + plate;
+
+            const blob = await response.blob();
+            img.src = URL.createObjectURL(blob);
+        }
+</script>
 
 </body>
 </html>
