@@ -47,3 +47,37 @@ def detect_and_read_plate(frame):
         plate_text = ""
 
     return frame, plate_text
+
+def track_vehicles(frame):
+    results = vehicles_model.track(
+        frame,
+        persist=True,
+        classes=[1,2,3,4,5,6,7],
+        verbose=False
+    )[0]
+
+    vehicle_ids = set()
+
+    for box in results.boxes:
+        if box.id is None:
+            continue
+
+        track_id = int(box.id[0])
+        vehicle_ids.add(track_id)
+
+        x1, y1, x2, y2 = map(int, box.xyxy[0])
+        cls_id = int(box.cls[0])
+        label = results.names[cls_id]
+
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        cv2.putText(
+            frame,
+            f"{label} ID:{track_id}",
+            (x1, y1 - 5),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.6,
+            (0, 255, 0),
+            2
+        )
+
+    return frame, vehicle_ids
