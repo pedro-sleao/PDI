@@ -9,8 +9,8 @@
 // ===========================
 // Enter your WiFi credentials
 // ===========================
-const char *ssid = "LAB.PDS";
-const char *password = "ufpe.lab.pds";
+const char *ssid = "Pedro R.a Fibra";
+const char *password = "pedro242";
 
 void startCameraServer();
 void setupLedFlash();

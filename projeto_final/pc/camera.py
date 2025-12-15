@@ -2,7 +2,8 @@ import requests
 import cv2
 import numpy as np
 
-ESP32_CAM_URL = "http://192.168.0.101/capture"
+ESP32_CAM_URL = "http://192.168.1.9/capture"
+ESP32_STREAM_URL = "http://192.168.1.9:81/stream"
 
 def get_snapshot():
     try:
@@ -18,3 +19,10 @@ def get_snapshot():
     except Exception as e:
         print("Erro:", e)
         return None
+    
+def get_stream():
+    cap = cv2.VideoCapture(ESP32_STREAM_URL)
+    if not cap.isOpened():
+        print("[ERROR] Cannot open ESP32-CAM stream")
+        return None
+    return cap
